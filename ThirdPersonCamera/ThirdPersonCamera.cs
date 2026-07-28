@@ -26,8 +26,6 @@ namespace ThirdPersonCamera
         public const float MIN_SHIP_DISTANCE = 10f;
         public const float MAX_SHIP_DISTANCE = 60f;
 
-        private const float CAMERA_SPEED = 4.0f;
-
         // Enabled is if we are allowed to be in 3rd person
         // Active is if the player wants to be in 3rd person
         public static bool CameraEnabled { get; set; }
@@ -350,6 +348,9 @@ namespace ThirdPersonCamera
 				CameraActive = false;
 			}
 
+            // Going back to first person the game would slowly rotate the free look angle back to the front, do it right away instead
+            Utility.CenterCameraInstantly(Locator.GetPlayerCameraController(), centerPitch: false);
+
             // Don't actually change camera because here we just move it
             if (CurrentCamera.name.Equals("RemoteViewerCamera")) return;
 
@@ -435,19 +436,8 @@ namespace ThirdPersonCamera
                 // Apply scrolling to distance
                 _desiredDistance = Mathf.Clamp(_desiredDistance + scroll * Time.deltaTime, minDistance, maxDistance);
 
-                // Increment the distance towards the desired distance
-                if (_distance != _desiredDistance)
-                {
-                    //ModHelper.Console.WriteLine($"Zooming from {distance} to {desiredDistance}", MessageType.Debug);
-                    float sign = _distance < _desiredDistance ? 1 : -1;
-                    float camera_speed = CAMERA_SPEED * (PlayerState.AtFlightConsole() ? 2.5f : 1);
-                    _distance = Mathf.Clamp(_distance + sign * camera_speed * Time.deltaTime, 0f, maxDistance);
-                    // Did we overshoot?
-                    if ((_distance < _desiredDistance && sign == -1) || (_distance > _desiredDistance && sign == 1))
-                    {
-                        _distance = _desiredDistance;
-                    }
-                }
+                // Jump straight to the desired distance, the camera should never move on its own
+                _distance = _desiredDistance;
 
                 // For raycasting and also moving the camera
                 Vector3 origin = cameraPivot.transform.position;
