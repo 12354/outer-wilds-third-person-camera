@@ -206,7 +206,7 @@ namespace ThirdPersonCamera
 
             if (OWInput.IsNewlyReleased(InputLibrary.freeLook, InputMode.All) && !Main.KeepFreeLookAngle)
             {
-                __instance.CenterCameraOverSeconds(0.33f, true); 
+                Utility.CenterCameraInstantly(__instance);
             }
             if (OWTime.IsPaused(OWTime.PauseType.Reading))
             {

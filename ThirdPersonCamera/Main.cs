@@ -201,7 +201,7 @@ namespace ThirdPersonCamera
                 if (UseThirdPersonByDefault)
                 {
                     ThirdPersonCamera.ActivateCamera();
-                    Locator.GetPlayerCameraController().CenterCameraOverSeconds(1.0f, true);
+                    Utility.CenterCameraInstantly(Locator.GetPlayerCameraController());
                 }
             }
             else
